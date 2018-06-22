@@ -63,7 +63,15 @@ function addDefaultConfig() {
 function getDocument() {
 	if (typeof editor === 'undefined') return '';
 	if (draft.title == config.autotaggerRulesDraftTitle) return '';
-	return editor.getSelectedText() || editor.getText();
+    let content = editor.getSelectedText();
+    if (content.length === 0){
+        content = editor.getText();
+        // Ignore the first line for tempaltes
+        if (draft.tags.includes('template')){
+            content = content.split('\n').slice(1).join('\n');
+        }
+    }
+	return content;
 }
 
 function sendToThings(data) {
