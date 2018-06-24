@@ -11,7 +11,7 @@ let parser = new TasksParser(autotagger);
 let document = getDocument();
 let templateParser = new TemplateTagParser(document);
 
-if (templateParser.ask()){
+if (templateParser.ask(draft.title)){
     document = templateParser.parse(document).text;
 
     let data = parser.parse(document);

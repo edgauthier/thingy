@@ -146,12 +146,12 @@ class TemplateTagParser {
 			.filter(tag => !reservedTags.includes(tag));
 	}
 	
-	ask() {
+	ask(title = 'Template Questions') {
 		let tags = this.tags;
 		if (tags.length == 0) return true;
 		
 		let prompt = Prompt.create();
-		prompt.title = 'Template Questions';
+		prompt.title = title;
 		tags.forEach(tag => prompt.addTextField(tag, tag, ''));
 		prompt.addButton('Okay');
 
@@ -1359,7 +1359,7 @@ var parser = new _TasksParser.TasksParser(autotagger);
 var document = getDocument();
 var templateParser = new _draftsTemplateParser.TemplateTagParser(document);
 
-if (templateParser.ask()) {
+if (templateParser.ask(draft.title)) {
   document = templateParser.parse(document).text;
   var data = parser.parse(document);
   var firstLine = document.split('\n')[0];
