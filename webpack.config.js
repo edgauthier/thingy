@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const config = {
   entry: {
 		'add-tasks': './src/add-tasks.js',
+        'process-template': './src/process-template.js',
 		'date-picker': './src/date-picker.js'
 	},
 	output: {
