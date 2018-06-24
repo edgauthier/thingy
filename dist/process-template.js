@@ -1358,27 +1358,31 @@ var autotagger = new _AutoTagger.Autotagger(configNote);
 var parser = new _TasksParser.TasksParser(autotagger);
 var document = getDocument();
 var templateParser = new _draftsTemplateParser.TemplateTagParser(document);
-templateParser.ask();
-document = templateParser.parse(document).text;
-var data = parser.parse(document);
-var firstLine = document.split('\n')[0];
 
-if (firstLine.startsWith('#')) {
-  var title = firstLine.substring(1).trim();
-  var project = new _Project.Project(title, data);
-  data = project.toThingsObject();
-}
+if (templateParser.ask()) {
+  document = templateParser.parse(document).text;
+  var data = parser.parse(document);
+  var firstLine = document.split('\n')[0];
 
-var sent = sendToThings(data);
+  if (firstLine.startsWith('#')) {
+    var title = firstLine.substring(1).trim();
+    var project = new _Project.Project(title, data);
+    data = project.toThingsObject();
+  }
 
-if (draft.title == config.autotaggerRulesDraftTitle) {
-  alert("Oops! You probably don't want to add your Autotagger rules as Things tasks.");
+  var sent = sendToThings(data);
+
+  if (draft.title == config.autotaggerRulesDraftTitle) {
+    alert("Oops! You probably don't want to add your Autotagger rules as Things tasks.");
+    context.cancel();
+  } else if (sent === false) {
+    context.fail();
+  } else if (sent === undefined) {
+    context.cancel('No tasks found');
+  } else {}
+} else {
   context.cancel();
-} else if (sent === false) {
-  context.fail();
-} else if (sent === undefined) {
-  context.cancel('No tasks found');
-} else {} ////////////////////////////////////////////////////////////////////////////////
+} ////////////////////////////////////////////////////////////////////////////////
 
 
 function getConfig() {
