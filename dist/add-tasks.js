@@ -174,6 +174,38 @@ function cleanup() {
   editor.activate();
 }
 
+function getTemplateTags(doc) {
+  var pattern = /\[\[([\w ]+)\]\]/g;
+  var tags = [];
+  var match;
+
+  while (match = pattern.exec(doc)) {
+    var name = match[1];
+    if (tags.indexOf(name) >= 0) continue;
+    if (config.reservedTemplateTags.indexOf(name) >= 0) continue;
+    tags.push(match[1]);
+  }
+
+  return tags;
+}
+
+function askTemplateQuestions(tags) {
+  var prompt = Prompt.create();
+  prompt.title = 'Template Questions';
+  tags.forEach(function (tag) {
+    return prompt.addTextField(tag, tag, '');
+  });
+  prompt.addButton('Okay');
+  return prompt.show() && prompt.fieldValues;
+}
+
+function setTemplateTags(doc, tags) {
+  Object.keys(tags).forEach(function (tag) {
+    return draft.setTemplateTag(tag, tags[tag]);
+  });
+  return draft.processTemplate(doc);
+}
+
 /***/ }),
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -912,9 +944,9 @@ function () {
       if (typeof notes == 'string') notes = [notes];
 
       if (this.attributes.notes) {
-        this.attributes.notes += '\n' + notes.join('\n');
+        this.attributes.notes += '\n\n' + notes.join('\n\n');
       } else {
-        this.attributes.notes = notes.join('\n');
+        this.attributes.notes = notes.join('\n\n');
       }
     }
     /**
